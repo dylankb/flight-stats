@@ -33,7 +33,13 @@ class App extends Component {
           <p>
             Welcome to the app!
           </p>
-          <Table className="routes-table" columns={columns} rows={routes} format={formatValue} />
+          <Table
+            className="routes-table"
+            columns={columns}
+            rows={routes}
+            format={formatValue}
+            perPage={25}
+          />
         </section>
       </div>
     );
