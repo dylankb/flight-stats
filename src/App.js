@@ -39,6 +39,7 @@ class App extends Component {
             rows={routes}
             format={formatValue}
             perPage={25}
+            airlines={airlines}
           />
         </section>
       </div>
