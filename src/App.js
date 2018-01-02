@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import flightData from './data.js';
 
 class App extends Component {
   render() {
@@ -12,6 +13,28 @@ class App extends Component {
           <p>
             Welcome to the app!
           </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Airline</th>
+                <th>Source</th>
+                <th>Destination</th>
+              </tr>
+            </thead>
+            <tbody>
+            {
+              flightData.routes.map((route, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{route.airline}</td>
+                    <td>{route.src}</td>
+                    <td>{route.dest}</td>
+                  </tr>
+                );
+              })
+            }
+            </tbody>
+          </table>
         </section>
       </div>
     );
