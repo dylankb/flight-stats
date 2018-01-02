@@ -8,6 +8,7 @@ class Table extends Component {
     this.state = { currentPage: defaultPage };
 
     this.handleNextPageClick = this.handleNextPageClick.bind(this);
+    this.handlePrevPageClick = this.handlePrevPageClick.bind(this);
   }
   handleNextPageClick() {
     this.setState((previousState) => {
@@ -16,8 +17,15 @@ class Table extends Component {
       };
     });
   }
+  handlePrevPageClick() {
+    this.setState((previousState) => {
+      return {
+        currentPage: previousState.currentPage - 1
+      };
+    });
+  }
   render() {
-    const { columns, rows, format, perPage } = this.props;
+    const { className, columns, rows, format, perPage } = this.props;
     const { currentPage } = this.state;
     const currentRows = rows.slice(currentPage * perPage - 24, currentPage * perPage)
     const formattedRows = currentRows.map((route, index) => {
@@ -30,29 +38,33 @@ class Table extends Component {
       );
     });
     return (
-      <table>
-        <thead>
-          <tr>
-            {
-              columns.map((column, index) => {
-                return ( <th key={index}>{column.name}</th> );
-              })
-            }
-          </tr>
-        </thead>
-        <tbody>
-          {formattedRows}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td onClick={this.handleNextPageClick}>Next</td>
-            <td>Previous</td>
-          </tr>
-          <tr>
-            <td>Displaying {currentPage * perPage - 24} - {currentPage * perPage} results</td>
-          </tr>
-        </tfoot>
-      </table>
+      <div>
+        <table className={className}>
+          <thead>
+            <tr>
+              {
+                columns.map((column, index) => {
+                  return ( <th key={index}>{column.name}</th> );
+                })
+              }
+            </tr>
+          </thead>
+          <tbody>
+            {formattedRows}
+          </tbody>
+        </table>
+        <p>Displaying {currentPage * perPage - 24} - {currentPage * perPage} results</p>
+        <div>
+          <button
+            disabled={currentPage === 1 ? true : false}
+            onClick={this.handlePrevPageClick}
+          >Previous</button>
+          <button
+            onClick={this.handleNextPageClick}
+          >Next
+          </button>
+        </div>
+      </div>
     );
 
   }
