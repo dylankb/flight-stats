@@ -2,28 +2,29 @@ import React, { Component } from 'react';
 
 class Table extends Component {
   render() {
-    const { routes, airlines, airports, getAirlineById, getAirportByCode } = this.props.flightData;
+    const { columns, format} = this.props;
+    const formattedRows = this.props.rows.map((route, index) => {
+      return (
+        <tr key={index}>
+          <td>{format(columns[0].property, route.airline)}</td>
+          <td>{format(columns[1].property, route.src)}</td>
+          <td>{format(columns[2].property, route.dest)}</td>
+        </tr>
+      );
+    });
     return (
       <table>
         <thead>
           <tr>
-            <th>Airline</th>
-            <th>Source</th>
-            <th>Destination</th>
+            {
+              columns.map((column, index) => {
+                return ( <th key={index}>{column.name}</th> );
+              })
+            }
           </tr>
         </thead>
         <tbody>
-        {
-          routes.map((route, index) => {
-            return (
-              <tr key={index}>
-                <td>{getAirlineById(route.airline)}</td>
-                <td>{getAirportByCode(route.src)}</td>
-                <td>{getAirportByCode(route.dest)}</td>
-              </tr>
-            );
-          })
-        }
+          {formattedRows}
         </tbody>
       </table>
     );
