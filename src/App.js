@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import flightData from './data.js';
-let { routes, airlines, airports } = flightData;
+const { routes, airlines, airports, getAirlineById, getAirportByCode } = flightData;
 
 class App extends Component {
   render() {
@@ -27,9 +27,9 @@ class App extends Component {
               routes.map((route, index) => {
                 return (
                   <tr key={index}>
-                    <td>{route.airline}</td>
-                    <td>{route.src}</td>
-                    <td>{route.dest}</td>
+                    <td>{getAirlineById(route.airline)}</td>
+                    <td>{getAirportByCode(route.src)}</td>
+                    <td>{getAirportByCode(route.dest)}</td>
                   </tr>
                 );
               })
