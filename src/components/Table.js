@@ -30,7 +30,7 @@ class Table extends Component {
     const { className, columns, rows, format, perPage } = this.props;
     const { currentPage } = this.state;
 
-    const currentRows = rows.slice(currentPage * perPage - 24, currentPage * perPage);
+    const currentRows = rows.slice(currentPage * perPage - 25, currentPage * perPage);
 
     const formattedRows = currentRows.map((route, index) => {
       return (
@@ -58,7 +58,7 @@ class Table extends Component {
             {formattedRows}
           </tbody>
         </table>
-        <p>Displaying {currentPage * perPage - 24} - {currentPage * perPage} results</p>
+        <p>Displaying {currentPage * perPage - 24} - {currentPage * currentRows.length} result{rows.length === 1 ? "" : "s"}</p>
         <div>
           <button
             disabled={currentPage === 1 ? true : false}
