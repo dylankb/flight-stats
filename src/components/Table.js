@@ -31,6 +31,7 @@ class Table extends Component {
     const { currentPage } = this.state;
 
     const currentRows = rows.slice(currentPage * perPage - 24, currentPage * perPage);
+
     const formattedRows = currentRows.map((route, index) => {
       return (
         <tr key={index}>
@@ -40,16 +41,17 @@ class Table extends Component {
         </tr>
       );
     });
+
+    const flightDataHeaders = columns.map((column, index) => {
+      return (<th key={index}>{column.name}</th>);
+    });
+
     return (
       <div>
         <table className={className}>
           <thead>
             <tr>
-              {
-                columns.map((column, index) => {
-                  return ( <th key={index}>{column.name}</th> );
-                })
-              }
+              {flightDataHeaders}
             </tr>
           </thead>
           <tbody>
@@ -63,7 +65,7 @@ class Table extends Component {
             onClick={this.handlePrevPageClick}
           >Previous</button>
           <button
-            disabled={this.props.rows.length - ((currentPage + 1) * perPage) > 0 ? false : true}
+            disabled={this.props.rows.length - ((currentPage + 1) * perPage) >= 0 ? false : true}
             onClick={this.handleNextPageClick}
           >Next
           </button>

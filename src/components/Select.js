@@ -22,15 +22,12 @@ class Select extends Component {
     });
 
     return (
-      <p>
-        <span>Show routes on...</span>
-        <select
-          value={this.props.value}
-          onChange={this.handleAirlineSelection}
-        >
-          {airlineOptions}
-        </select>
-      </p>
+      <select
+        value={this.props.value}
+        onChange={this.handleAirlineSelection}
+      >
+        {airlineOptions}
+      </select>
     );
   }
 }

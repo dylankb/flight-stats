@@ -5,19 +5,9 @@ import flightData from './data.js';
 import Table from './components/Table.js';
 import Select from './components/Select.js';
 
-const { routes, airlines, airports, getAirlineById, getAirportByCode } = flightData;
+const { routes, airlines, getAirlineById, getAirportByCode } = flightData;
 
 class App extends Component {
-  render() {
-    function formatValue(property, value) {
-      let result;
-      if (property === 'airline') {
-        result = getAirlineById(value);
-      } else if (property === 'src' || property === 'dest') {
-        result = getAirportByCode(value);
-      }
-
-      return result;
   constructor() {
     super()
 
@@ -35,15 +25,24 @@ class App extends Component {
     });
   }
 
+  formatValue(property, value) {
+    let result;
+    if (property === 'airline') {
+      result = getAirlineById(value);
+    } else if (property === 'src' || property === 'dest') {
+      result = getAirportByCode(value);
     }
+
+    return result;
+  }
   render() {
     const { selectedAirline } = this.state;
-    const defaultOption = { id: 'all', name: 'All Airlines' };
-    const filteredAirlines = airlines.concat(defaultOption);
-    const filteredRoutesByAirline = routes.filter((row) => {
-      if (selectedAirline === 'all') { return true; }
-      return String(row.airline) === selectedAirline;
-    });
+    const filteredAirlines = airlines;
+
+    const filteredRoutesByAirline = () => {
+      if (selectedAirline === 'all') { return routes; }
+      return routes.filter(row => String(row.airline) === selectedAirline);
+    };
 
     const columns = [
       {name: 'Airline', property: 'airline'},
@@ -60,6 +59,7 @@ class App extends Component {
           <p>
             Welcome to the app!
           </p>
+          <span>Show routes on...</span>
           <Select
             options={filteredAirlines}
             valueKey="id"
@@ -71,7 +71,7 @@ class App extends Component {
           <Table
             className="routes-table"
             columns={columns}
-            rows={filteredRoutesByAirline}
+            rows={filteredRoutesByAirline()}
             format={this.formatValue}
             perPage={25}
           />
