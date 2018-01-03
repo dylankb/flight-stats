@@ -3,16 +3,14 @@ import React, { Component } from 'react';
 class Table extends Component {
   constructor(props) {
     super(props)
-    
+
     const defaultPage = 1;
     this.state = {
       currentPage: defaultPage,
-      selectedAirline: 'all',
     };
 
     this.handleNextPageClick = this.handleNextPageClick.bind(this);
     this.handlePrevPageClick = this.handlePrevPageClick.bind(this);
-    this.handleAirlineSelection = this.handleAirlineSelection.bind(this);
   }
   handleNextPageClick() {
     this.setState((previousState) => {
@@ -28,24 +26,11 @@ class Table extends Component {
       };
     });
   }
-  handleAirlineSelection(event) {
-    var airlineId = event.target.value;
-    this.setState((previousState) => {
-      return {
-        selectedAirline: airlineId
-      };
-    });
-  }
   render() {
-    const { airlines, className, columns, rows, format, perPage } = this.props;
-    const { currentPage, selectedAirline } = this.state;
-    const rowsByAirline = rows.filter((row) => {
-      if (selectedAirline === 'all') { return true; }
-      return String(row.airline) === selectedAirline;
-    });
-    const currentRows = rowsByAirline.slice(currentPage * perPage - 24, currentPage * perPage);
-    const defaultOption = { id: 'all', name: 'All Airlines' };
-    const airlineOptions = airlines.concat(defaultOption);
+    const { className, columns, rows, format, perPage } = this.props;
+    const { currentPage } = this.state;
+
+    const currentRows = rows.slice(currentPage * perPage - 24, currentPage * perPage);
     const formattedRows = currentRows.map((route, index) => {
       return (
         <tr key={index}>
@@ -57,25 +42,6 @@ class Table extends Component {
     });
     return (
       <div>
-        <p>
-          <span>Show routes on...</span>
-          <select
-            value={selectedAirline}
-            onChange={this.handleAirlineSelection}
-          >
-            {
-              airlineOptions.map((airline) => {
-                return (
-                  <option
-                    key={airline.id}
-                    value={airline.id}
-                  >{airline.name}
-                  </option>
-                );
-              })
-            }
-          </select>
-        </p>
         <table className={className}>
           <thead>
             <tr>
@@ -97,6 +63,7 @@ class Table extends Component {
             onClick={this.handlePrevPageClick}
           >Previous</button>
           <button
+            disabled={this.props.rows.length - ((currentPage + 1) * perPage) > 0 ? false : true}
             onClick={this.handleNextPageClick}
           >Next
           </button>
