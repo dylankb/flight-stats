@@ -5,7 +5,7 @@ import flightData from './data.js';
 import Table from './components/Table.js';
 import Select from './components/Select.js';
 
-const { routes, airlines, getAirlineById, getAirportByCode } = flightData;
+const { routes, airlines, airports, getAirlineById, getAirportByCode } = flightData;
 
 class App extends Component {
   constructor() {
@@ -13,15 +13,20 @@ class App extends Component {
 
     this.state = {
       selectedAirline: 'all',
+      selectedAirport: 'all',
     };
 
     this.handleAirlineSelection = this.handleAirlineSelection.bind(this);
+    this.handleAirportSelection = this.handleAirportSelection.bind(this);
   }
   handleAirlineSelection(airlineId) {
-    this.setState((previousState) => {
-      return {
-        selectedAirline: airlineId
-      };
+    this.setState({
+      selectedAirline: airlineId,
+    });
+  }
+  handleAirportSelection(airportId) {
+    this.setState({
+      selectedAirport: airportId
     });
   }
 
@@ -36,12 +41,27 @@ class App extends Component {
     return result;
   }
   render() {
-    const { selectedAirline } = this.state;
+    const { selectedAirline, selectedAirport } = this.state;
     const filteredAirlines = airlines;
+    const filteredAirports = airports.sort((a, b) => {
+      if (a.name > b.name) { return 1; }
+      if (a.name < b.name) { return -1; }
+      return 0;
+    });
 
     const filteredRoutesByAirline = () => {
       if (selectedAirline === 'all') { return routes; }
       return routes.filter(row => String(row.airline) === selectedAirline);
+    };
+
+    const filteredRoutesByAirlineAndAirport = () => {
+      if (selectedAirport === 'all') {
+        return filteredRoutesByAirline();
+      } else {
+        return filteredRoutesByAirline().filter((row) => {
+          return row.src === selectedAirport || row.src === selectedAirport;
+        });
+      }
     };
 
     const columns = [
@@ -68,10 +88,19 @@ class App extends Component {
             value={this.state.selectedAirline}
             onSelect={this.handleAirlineSelection}
           />
+          <span>for flights in and out of</span>
+          <Select
+            options={filteredAirports}
+            valueKey="code"
+            titleKey="name"
+            allTitle="All Airports"
+            value={this.state.selectedAirport}
+            onSelect={this.handleAirportSelection}
+          />
           <Table
             className="routes-table"
             columns={columns}
-            rows={filteredRoutesByAirline()}
+            rows={filteredRoutesByAirlineAndAirport()}
             format={this.formatValue}
             perPage={25}
           />

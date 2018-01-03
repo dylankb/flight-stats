@@ -4,19 +4,19 @@ class Select extends Component {
   constructor(props) {
     super(props)
 
-    this.handleAirlineSelection = this.handleAirlineSelection.bind(this);
+    this.handleSelection = this.handleSelection.bind(this);
   }
-  handleAirlineSelection(event) {
+  handleSelection(event) {
     this.props.onSelect(event.target.value);
   }
   render() {
     const { valueKey, allTitle, titleKey, options } = this.props;
-    const defaultOption = { id: valueKey, name: allTitle };
+    const defaultOption = { [valueKey]: 'all', name: allTitle };
 
-    const airlineOptions = [defaultOption, ...options].map(airline => {
+    const selectOptions = [defaultOption, ...options].map(option => {
       return (
-        <option key={airline.id} value={airline.id}>
-          {airline[titleKey]}
+        <option key={option[valueKey]} value={option[valueKey]}>
+          {option[titleKey]}
         </option>
       );
     });
@@ -24,9 +24,9 @@ class Select extends Component {
     return (
       <select
         value={this.props.value}
-        onChange={this.handleAirlineSelection}
+        onChange={this.handleSelection}
       >
-        {airlineOptions}
+        {selectOptions}
       </select>
     );
   }
