@@ -18,15 +18,25 @@ class App extends Component {
 
     this.handleAirlineSelection = this.handleAirlineSelection.bind(this);
     this.handleAirportSelection = this.handleAirportSelection.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
   }
+
   handleAirlineSelection(airlineId) {
     this.setState({
       selectedAirline: airlineId,
     });
   }
+
   handleAirportSelection(airportId) {
     this.setState({
       selectedAirport: airportId
+    });
+  }
+
+  resetFilters() {
+    this.setState({
+      selectedAirline: 'all',
+      selectedAirport: 'all',
     });
   }
 
@@ -97,6 +107,10 @@ class App extends Component {
             value={this.state.selectedAirport}
             onSelect={this.handleAirportSelection}
           />
+          <button
+            onClick={this.resetFilters}
+          >Show All Routes
+          </button>
           <Table
             className="routes-table"
             columns={columns}
