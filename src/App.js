@@ -52,27 +52,44 @@ class App extends Component {
   }
   render() {
     const { selectedAirline, selectedAirport } = this.state;
-    const filteredAirlines = airlines;
-    const filteredAirports = airports.sort((a, b) => {
+
+    const sortedAirports = airports.sort((a, b) => {
       if (a.name > b.name) { return 1; }
       if (a.name < b.name) { return -1; }
       return 0;
     });
 
-    const filteredRoutesByAirline = () => {
+    const filteredRoutesByAirline = (() => {
       if (selectedAirline === 'all') { return routes; }
       return routes.filter(row => String(row.airline) === selectedAirline);
+    })();
+
+    const filterRoutesByAirport = (routesByAirline) => {
+      if (selectedAirport === 'all') { return routesByAirline; }
+      return routesByAirline.filter(row => {
+        return row.src === selectedAirport || row.dest === selectedAirport;
+      });
     };
 
-    const filteredRoutesByAirlineAndAirport = () => {
-      if (selectedAirport === 'all') {
-        return filteredRoutesByAirline();
-      } else {
-        return filteredRoutesByAirline().filter((row) => {
-          return row.src === selectedAirport || row.src === selectedAirport;
-        });
-      }
-    };
+    const filteredRoutesByAirlineAndAirport = filterRoutesByAirport(filteredRoutesByAirline);
+
+    const filteredAirlines = airlines.map((airlineOption) => {
+      var hasRoutes = filteredRoutesByAirlineAndAirport.some((route) => {
+        return Number(route.airline) === airlineOption.id;
+      });
+
+      airlineOption.isDisabled = hasRoutes ? false : true;
+      return airlineOption;
+    });
+
+    const filteredAirports = sortedAirports.map((airportOption) => {
+      var hasRoutes = filteredRoutesByAirlineAndAirport.some((route) => {
+        return route.src === airportOption.code || route.src === airportOption.code;
+      });
+
+      airportOption.isDisabled = hasRoutes ? false : true;
+      return airportOption;
+    });
 
     const columns = [
       {name: 'Airline', property: 'airline'},
@@ -89,32 +106,34 @@ class App extends Component {
           <p>
             Welcome to the app!
           </p>
-          <span>Show routes on...</span>
-          <Select
-            options={filteredAirlines}
-            valueKey="id"
-            titleKey="name"
-            allTitle="All Airlines"
-            value={this.state.selectedAirline}
-            onSelect={this.handleAirlineSelection}
-          />
-          <span>for flights in and out of</span>
-          <Select
-            options={filteredAirports}
-            valueKey="code"
-            titleKey="name"
-            allTitle="All Airports"
-            value={this.state.selectedAirport}
-            onSelect={this.handleAirportSelection}
-          />
-          <button
-            onClick={this.resetFilters}
-          >Show All Routes
-          </button>
+          <div>
+            <span>Show routes on...</span>
+            <Select
+              options={filteredAirlines}
+              valueKey="id"
+              titleKey="name"
+              allTitle="All Airlines"
+              value={this.state.selectedAirline}
+              onSelect={this.handleAirlineSelection}
+            />
+            <span>for flights in and out of</span>
+            <Select
+              options={filteredAirports}
+              valueKey="code"
+              titleKey="name"
+              allTitle="All Airports"
+              value={this.state.selectedAirport}
+              onSelect={this.handleAirportSelection}
+            />
+            <button
+              onClick={this.resetFilters}
+            >Show All Routes
+            </button>
+          </div>
           <Table
             className="routes-table"
             columns={columns}
-            rows={filteredRoutesByAirlineAndAirport()}
+            rows={filteredRoutesByAirlineAndAirport}
             format={this.formatValue}
             perPage={25}
           />
